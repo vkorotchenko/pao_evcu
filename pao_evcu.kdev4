@@ -1,0 +1,4 @@
+[Project]
+Name=PAO_EVCU
+Manager=KDevCMakeManager
+VersionControl=kdevgit
