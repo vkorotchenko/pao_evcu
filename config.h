@@ -87,18 +87,18 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define ThrottleSubtype			1		//subtype 1 is a standard linear pot throttle
 #define ThrottleRegenMinValue	270		//where does Regen stop (1/10 of percent)
 #define ThrottleRegenMaxValue	0		//where Regen is at maximum (1/10 of percent)
-#define ThrottleFwdValue		280		//where does forward motion start
-#define ThrottleMapValue		750		//Where is the 1/2 way point for throttle
+#define ThrottleFwdValue		360		//where does forward motion start
+#define ThrottleMapValue		420		//Where is the 1/2 way point for throttle
 #define ThrottleMinRegenValue	0		//how many percent of full power to use at minimal regen
 #define ThrottleMaxRegenValue	70		//how many percent of full power to use at maximum regen
 #define ThrottleCreepValue   	15		//percentage of torque used for creep function (imitate creep of automatic transmission, set 0 to disable)
 #define ThrottleMaxErrValue		150		//tenths of percentage allowable deviation between pedals
-#define Throttle1MinValue		562		//Value ADC reads when pedal is up
-#define Throttle1MaxValue		1024		//Value ADC reads when pedal fully depressed
+#define Throttle1MinValue		345		//Value ADC reads when pedal is up
+#define Throttle1MaxValue		510		//Value ADC reads when pedal fully depressed
 #define Throttle2MinValue		0		//Value ADC reads when pedal is up
 #define Throttle2MaxValue		0	//Value ADC reads when pedal fully depressed
-#define BrakeMinValue			100		//Value ADC reads when brake is not pressed
-#define BrakeMaxValue			3200		//Value ADC reads when brake is pushed all of the way down
+#define BrakeMinValue			400		//Value ADC reads when brake is not pressed
+#define BrakeMaxValue			500		//Value ADC reads when brake is pushed all of the way down
 #define BrakeMinRegenValue		0		//percent of full power to use for brake regen (min)
 #define BrakeMaxRegenValue		50		//percent of full power to use for brake regen (max)
 #define CoolOff             35 //temperature to turn it off

@@ -120,7 +120,7 @@ void setup() {
 	Wire.setClock(1000000);
 	Logger::info("TWI init ok");
 	systemIO.setup();  
-	canHandler.setup();
+		canHandler.setup();
 	Logger::info("SYSIO init ok");	
 
 	bleData = new Ble::BleData();
@@ -131,12 +131,8 @@ void setup() {
 
 	systemIO.setup();  
 	Logger::info("SYSIO init ok");	
-
-   
-	Logger::info("System Ready");	
-	initializeDevices(bleData);
-
-  	btTimer.setInterval(ble_interval, send_ble_info);
+	
+	btTimer.setInterval(ble_interval, send_ble_info);
 }
 
 void send_ble_info(){
@@ -151,7 +147,7 @@ void loop() {
 	// check if incoming frames are available in the can buffer and process them
 	canHandler.process();
 	
-	btTimer.run();
+	//btTimer.run();
 
 	Timer.loop();
 	Timer1.loop();

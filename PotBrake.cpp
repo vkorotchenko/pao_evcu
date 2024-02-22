@@ -64,6 +64,7 @@ void PotBrake::handleTick() {
 RawSignalData *PotBrake::acquireRawSignal() {
     PotBrakeConfiguration *config = (PotBrakeConfiguration *) getConfiguration();
     rawSignal.input1 = systemIO.getAnalogIn(config->AdcPin1);
+        // Logger::info(": brake (%d)", rawSignal.input1);
     return &rawSignal;
 }
 

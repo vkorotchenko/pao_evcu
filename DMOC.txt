@@ -28,7 +28,7 @@ We initialize as:
   selectedGear = NEUTRAL;
 	operationState = DISABLED;
 	actualState = DISABLED;
-
+ 
 We can set these values programmatically using two functions provided by our parent class MotorController.  They are setOpState(operationState) and setSelectedGear(selectedGear).
 
 We can also set them via hardware input by activating the ENABLE input and the REVERSE input to any of the four digital inputs.

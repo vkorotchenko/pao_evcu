@@ -114,8 +114,6 @@ public:
     
     void setSystemType(SystemType);
     SystemType getSystemType();
-    bool calibrateADCOffset(int, bool);
-    bool calibrateADCGain(int, int32_t, bool);
     bool isInitialized();
     void pollInitialization();
 

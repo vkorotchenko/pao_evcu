@@ -52,7 +52,7 @@ MotorController::MotorController() : Device() {
     torqueRequested = 0;
     torqueActual = 10;
     torqueAvailable = 0;
-    mechanicalPower = 0;
+    mechanicalPower = 0; 
 
     selectedGear = NEUTRAL;
     operationState = ENABLE;
@@ -143,12 +143,10 @@ void MotorController::handleTick() {
     if (accelerator) {
         throttleRequested = accelerator->getLevel();
         bluetoothData->inThrottle = throttleRequested;
-        bluetoothData->inBrake = 0;
 
     }
     if (brake && brake->getLevel() < -10 && brake->getLevel() < accelerator->getLevel()) //if the brake has been pressed it overrides the accelerator.
         throttleRequested = brake->getLevel();
-        bluetoothData->inThrottle = 0;
         bluetoothData->inBrake = throttleRequested;
     //Logger::debug("Throttle: %d", throttleRequested);
 
@@ -232,7 +230,7 @@ void MotorController::checkPrecharge()
     int relay=getprechargeRelay();
     int runTime=millis()-premillis;
 
-    if (runTime< prechargetime) //Check milliseconds since startup against our entered delay in milliseconds
+if (runTime< prechargetime) //Check milliseconds since startup against our entered delay in milliseconds
     {
         if(!prelay)
         {
@@ -266,7 +264,7 @@ void MotorController::checkPrecharge()
         
         
         donePrecharge=true; //Time's up.  Let's don't do ANY of this on future ticks.
-        //Generally, we leave the precharge relay on.  This doesn't hurt much in any configuration.  But when using two contactors
+                //Generally, we leave the precharge relay on.  This doesn't hurt much in any configuration.  But when using two contactors
         //one positive with a precharge resistor and one on the negative leg to act as precharge, we need to leave precharge on.
         bluetoothData->outMainCon = 1;
 

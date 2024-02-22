@@ -65,6 +65,7 @@ RawSignalData *PotThrottle::acquireRawSignal() {
     PotThrottleConfiguration *config = (PotThrottleConfiguration *) getConfiguration();
 
     rawSignal.input1 = systemIO.getAnalogIn(config->AdcPin1);
+
     rawSignal.input2 = systemIO.getAnalogIn(config->AdcPin2);
     return &rawSignal;
 }

@@ -94,7 +94,7 @@ void DmocMotorController::handleCanFrame(CAN_FRAME *frame) {
     int temp;
     online = true; //if a frame got to here then it passed the filter and must have been from the DMOC
 
-    Logger::info("DMOC CAN received: %X  %X  %X  %X  %X  %X  %X  %X  %X", frame->id,frame->data.bytes[0] ,frame->data.bytes[1],frame->data.bytes[2],frame->data.bytes[3],frame->data.bytes[4],frame->data.bytes[5],frame->data.bytes[6],frame->data.bytes[70]);
+    //Logger::info("DMOC CAN received: %X  %X  %X  %X  %X  %X  %X  %X  %X", frame->id,frame->data.bytes[0] ,frame->data.bytes[1],frame->data.bytes[2],frame->data.bytes[3],frame->data.bytes[4],frame->data.bytes[5],frame->data.bytes[6],frame->data.bytes[70]);
 
 
     switch (frame->id) {
@@ -125,6 +125,7 @@ void DmocMotorController::handleCanFrame(CAN_FRAME *frame) {
         temp = (OperationState) (frame->data.bytes[6] >> 4);
         //actually, the above is an operation status report which doesn't correspond
         //to the state enum so translate here.
+
         switch (temp) {
 
         case 0: //Initializing
@@ -198,22 +199,32 @@ void DmocMotorController::handleCanFrame(CAN_FRAME *frame) {
 void DmocMotorController::handleTick() {
 
     MotorController::handleTick(); //kick the ball up to papa
+    Logger::debug("activity count: %d", activityCount);
 
     if (activityCount > 0)
     {
-        activityCount--;
+        // activityCount--;
         if (activityCount > 60) activityCount = 60;
         if (activityCount > 40) //If we are receiving regular CAN messages from DMOC, this will very quickly get to over 40. We'll limit
             // it to 60 so if we lose communications, within 20 ticks we will decrement below this value.
         {
-            Logger::debug("Enable Input Active? %T         Reverse Input Active? %T" ,systemIO.getDigitalIn(getEnableIn()),systemIO.getDigitalIn(getReverseIn()));
-            if(getEnableIn()<0)setOpState(ENABLE); //If we HAVE an enableinput 0-3, we'll let that handle opstate. Otherwise set it to ENABLE
-            if(getReverseIn()<0)setSelectedGear(DRIVE); //If we HAVE a reverse input, we'll let that determine forward/reverse.  Otherwise set it to DRIVE
+            if(getEnableIn()==255 || systemIO.getDigitalIn(getEnableIn()) ){
+                setOpState(ENABLE); 
+                if (systemIO.getDigitalIn(getReverseIn())){
+                    setSelectedGear(REVERSE);
+                    setGear(REVERSE);
+                } else {
+                  setSelectedGear(DRIVE);
+                  setGear(DRIVE);
+                }
+            }
         }
     }
     else {
         setSelectedGear(NEUTRAL); //We will stay in NEUTRAL until we get at least 40 frames ahead indicating continous communications.
     }
+    Logger::debug("GeAr %s        Online %T           running %T" ,getSelectedGear(), online, running);
+
 
     if(!online)  //This routine checks to see if we have received any frames from the inverter.  If so, ONLINE would be true and
     {   //we set the RUNNING light on.  If no frames are received for 2 seconds, we set running OFF.
@@ -251,13 +262,8 @@ void DmocMotorController::sendCmd1() {
         speedRequested = 20000 + (((long) throttleRequested * (long) config->speedMax) / 1000);
     else
         speedRequested = 20000;
-    output.data.bytes[0] = (speedRequested & 0xFF00) >> 8;
-    output.data.bytes[1] = (speedRequested & 0x00FF);
-    output.data.bytes[2] = 0; //not used
-    output.data.bytes[3] = 0; //not used
-    output.data.bytes[4] = 0; //not used
-    output.data.bytes[5] = ON; //key state
 
+        
     //handle proper state transitions
     newstate = DISABLED;
     if (actualState == DISABLED && (operationState == STANDBY || operationState == ENABLE))
@@ -267,6 +273,16 @@ void DmocMotorController::sendCmd1() {
     if (operationState == POWERDOWN)
         newstate = POWERDOWN;
 
+
+    output.data.bytes[0] = (speedRequested & 0xFF00) >> 8;
+    output.data.bytes[1] = (speedRequested & 0x00FF);
+    output.data.bytes[2] = 0; //not used
+    output.data.bytes[3] = 0; //not used
+    output.data.bytes[4] = 0; //not used
+    output.data.bytes[5] = ON; //key state
+
+
+    Logger::info("command 1 : speedRequested: %d, selected Gear : %d newState : %d, operationState: %d", speedRequested, selectedGear, newstate, operationState);
     if (actualState == ENABLE) {
         output.data.bytes[6] = alive + ((byte) selectedGear << 4) + ((byte) newstate << 6); //use new automatic state system.
     }
